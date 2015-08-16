@@ -1685,109 +1685,104 @@ function count()
 
 ### 8.22. @typedef
 
-Allows the author to define a custom type composed of one or more types that
-may be augmented with key definitions, properties or methods.
+Allows the author to define a virtual type and/or type alias.
+
+The defined type may be derived from a base type expression, which, at it's
+simplest could be a single class/interface name, or any valid type expression,
+including union types, generic types, or another virtual type.
+
+A type may be augmented (with nested tags) to define tuples (known indices),
+virtual classes (with properties or methods), callables (with parameters and
+a return value) or any combination of those.
 
 #### Syntax
 
-    @typedef ["Type"] [<"QCN">] [<"Inline PHPDoc">]
+    @typedef ["QCN"] [<"Type">] [<"Inline PHPDoc">]
+
 
 #### Description
 
-Using the `@typedef` tag it is possible to define a new pseudo-type or 
-associative array definition for use in PHPDoc blocks.
+Virtual types (or type aliases) may be defined using @typedef in a
+file-level DocBlock.
 
-Let's explain this concept by presenting the following use-cases:
+The first parameter is the qualified name ("QCN") of the type being defined.
+Note that, if this name is not fully-qualified, it is expanded according to
+normal PHP name resolution rules, e.g. relative to the namespace of the file.
 
-1. You want to document the properties of a class that is dynamically 
-   constructed, such as the `\stdClass` coming from `json_decode`.
-2. You have a configuration array for which you want to document its keys and 
-   associated values.
-3. You consume a library with magic methods who does not implement the `@method`
-   tag but still want to document which methods are on it yourself.
-4. You want a pseudo-type called Scalar that represents either a string, float,
-   bool or int.
-5. You have used class_alias() to create an alias and want PHPDoc to know which
-   class it is based from so that methods and properties could be inherited.
-
-The first parameter for the `@typedef` tag is the base "Type", 
-including compound types and collection classes, that is the defining "Type" 
-for the second parameter. The second parameter is used to name your pseudo-type, 
-and MUST be a Qualified Class Name.
-
-The second parameter MAY be omitted, in which case an "Inline PHPDoc" MUST be
-defined. The information in the "Inline PHPDoc" will augment the existing base
-class. Using this mechanism it is possible to provide additional information
-with an existing class, such as methods or properties that could or were not
-documented in the original.
-
-It is also possible to combine multiple "Types" into a single pseudo-type by 
-using the pipe operator (`|`), the examples section contains an example of use.
-
-##### Location
-
-A `@typedef` tag MUST always be placed on a DocBlock that belongs to a File or 
-Class. 
-
-When associated with a File the type definition is considered to be 
-global and available throughout your project. It is NOT RECOMMENDED to use it
-in this fashion without due consideration as you are making your documentation
-harder to read without generator or IDE.
-
-Type definitions that are associated with a Class MUST only be used inside that
-class, or its descendants, and are considered to have a visibility similar to 
-protected.
-
-##### Adding methods and properties on objects
-
-It is also possible to add new properties or methods using an "Inline PHPDoc",
-and the `@property` and `@method` tags on any object. In this context an object
-is any Qualified Class Name (QCN) that does not match one of PHP's primitive 
-types. A notable exception is the 'object' keyword, which may have methods and 
-properties added onto it.
+The second parameter is an option "Type" from which the defined type will
+inherit all public members and tags.
 
 #### Examples
 
-##### Providing an alias for another class
-
-An example may be that the `\Storage` class is aliased using the 
-`class_alias()` function as `\Session`, and the elements of the `\Session` 
-class must be documented. 
-
-The above can be accomplished with the following tag:
-
-    @typedef \Storage \Session
-
-##### Defining additional elements on an aliased class
-
-Here is an example where we add a property and a summary on the new `\Session`
-class.
+Defining a simple alias for another type:
 
 ```
-@typedef \Storage \Session {
-  This class represents a session that stores user specific information.
-
-  @property string $session_id
-}
+/**
+ * @typedef number int
+ */
 ```
 
-##### Combining multiple types into one
-
-An example of combining multiple types may be a class that is regularly 
-stubbed in unit tests:
-
-    @typedef \Mockery\MockInterface|\My\DiContainer DicStub
-
-The above example will construct a pseudo-type DicStub that combines the methods
-and properties of both the MockInterface and the DiContainer.
-
-##### Defining an associative array as pseudo-type
+Defining a common type union for reuse:
 
 ```
-@typedef array \Configuration {
-  @var string $setting1
-  @var string $setting2
-}
+/**
+ * @typedef scalar int|string|float|bool
+ */
+```
+
+Defining a tuple, e.g. an array with a known set of indices:
+
+```PHP
+/**
+ * @typedef UserRecord {
+ *     @var int    $id
+ *     @var string $first_name
+ *     @var string $last_name
+ * }
+ */
+ 
+/** @var UserRecord $row */
+$row = array("id" => 1, "first_name" => "Bob", "last_name" => "Foo");
+```
+
+Defining the properties of a virtual class, e.g. the result of `json_decode()`
+or any simple `(object)` typecast:
+
+```PHP
+/**
+ * @typedef User {
+ *     @property int    $id
+ *     @property string $first_name
+ *     @property string $last_name
+ * }
+ */
+
+$row = array("id" => 1, "first_name" => "Bob", "last_name" => "Foo");
+ 
+/** @var User $user */
+$user = (object) $row;
+```
+
+Extending a class with known ("magic") properties:
+
+```
+/**
+ * @typedef ShopSession Session {
+ *     @property int|null $user_id
+ *     @property ShopCart $cart
+ * }
+ */
+```
+
+Defining the function signature of a known callable:
+
+```
+/**
+ * @typedef Filter {
+ *     @param string $input
+ *     @return string output
+ * }
+ */
 ```
 
 ### 8.23. @uses
