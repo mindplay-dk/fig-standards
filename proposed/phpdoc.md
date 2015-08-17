@@ -2417,6 +2417,10 @@ The following keywords are recognized by this PSR:
  1. De-facto standard PHPDoc used e.g. `@param string $names,...` to indicate variable number of parameters - in
     PSR PHPDoc we use `@param ... string $names` to better align with the syntax used in most languages.
 
+ 2. De-facto standard PHPDoc user e.g. `@method int count()` to define "magic" methods - in PSR PHPDoc, we use
+    `@method count() : int` to align with [PHP 7 syntax](https://wiki.php.net/rfc/return_types). (Implementors may
+    wish to support both syntaxes for "backwards compatibility" with the de-facto standard.)
+
 [RFC2119]:      https://tools.ietf.org/html/rfc2119
 [RFC5234]:      https://tools.ietf.org/html/rfc5234
 [RFC2396]:      https://tools.ietf.org/html/rfc2396
