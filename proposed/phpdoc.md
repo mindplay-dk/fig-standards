@@ -482,7 +482,7 @@ An example of this is:
 
 ```php
 /**
- * @method int MyMagicMethod(string $argument1) {
+ * @method MyMagicMethod(string $argument1) : int {
  *     This is the summary for MyMagicMethod.
  *
  *     @param string $argument1 Description for argument 1.
@@ -581,7 +581,7 @@ Some tags may even feature an "Inline PHPDoc" as shown in the following example.
 
 ```php
 /**
- * @method int MyMagicMethod(string $argument1) {
+ * @method MyMagicMethod(string $argument1) : int {
  *     This is the summary for MyMagicMethod.
  *
  *     @param string $argument1 Description for argument 1.
@@ -1197,7 +1197,7 @@ The @method allows a class to know which 'magic' methods are callable.
 
 #### Syntax
 
-    @method [return type] [name]([type] [parameter], [...]) [description]
+    @method [name](["Type"] [parameter])* [<: "Type">] [description]
 
 #### Description
 
@@ -1231,8 +1231,8 @@ class Parent
 }
 
 /**
- * @method string getString()
- * @method void setInteger(int $integer)
+ * @method getString() : string
+ * @method setInteger(int $integer) : void
  * @method setString(int $integer)
  */
 class Child extends Parent
