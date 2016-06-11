@@ -96,7 +96,22 @@ interface ServerRequestFactoryInterface extends
      * @return ServerRequestInterface
      */
     public function createServerRequest($method, $uri);
+}
+```
 
+### 2.4 GlobalServerRequestFactoryInterface
+
+Has the ability to create a server request fully-populated by importing values from
+PHP superglobals such as `$_GET`, `$_POST`, `$_SERVER`, etc.
+
+```php
+namespace Psr\Http\Message;
+
+interface GlobalServerRequestFactoryInterface extends
+    UploadedFileFactoryInterface,
+    UriFactoryInterface,
+    StreamFactoryInterface
+{
     /**
      * Create a new server request from PHP globals.
      *
@@ -106,7 +121,7 @@ interface ServerRequestFactoryInterface extends
 }
 ```
 
-### 2.4 StreamFactoryInterface
+### 2.5 StreamFactoryInterface
 
 Has the ability to create streams for requests and responses.
 
@@ -143,7 +158,7 @@ $resource = fopen('php://temp', 'r+');
 fwrite($resource, $body);
 ```
 
-### 2.5 UploadedFileFactoryInterface
+### 2.6 UploadedFileFactoryInterface
 
 Has the ability to create streams for uploaded files.
 
@@ -193,7 +208,7 @@ $resource = fopen('php://temp', 'r+');
 fwrite($resource, $body);
 ```
 
-### 2.6 UriFactoryInterface
+### 2.7 UriFactoryInterface
 
 Has the ability to creates URIs for client and server requests.
 
